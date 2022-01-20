@@ -11,16 +11,34 @@ namespace SnakeV2
     {
         public int posX;
         public int posY;
+        public string symbol;
 
-        public SnakePart(int x, int y)
+        public SnakePart(int x, int y, string tsymbol)
         {
             posX = x;
             posY = y;
+            symbol = tsymbol;
+        }
+    }
+
+    class Food
+    {
+        public int posX;
+        public int posY;
+        Random randX = new Random();
+        public void SetRandomPosition(int maxCols, int maxRows)
+        {
+            posX = randX.Next(1, maxCols-1);
+            posY = randX.Next(1, maxRows-1);
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(posX, posY);
+            Console.Write("0");
         }
     }
     class Program
     {
         static Timer gameLoopTimer = null;
+        static bool paused = false;
         //player variables
         static List<SnakePart> allParts = new List<SnakePart>();
         static int xSpeed = 1;
@@ -29,6 +47,7 @@ namespace SnakeV2
         //score variables
         static bool gameOver = false;
         static int score = 0;
+        static Food foodInstance;
         //map variables
         static string[,] mapArray;
         static int mapColumns = 50;
@@ -38,6 +57,7 @@ namespace SnakeV2
         {
             //Console.OutputEncoding = System.Text.Encoding.UTF8;
             Console.CursorVisible = false;
+            foodInstance = new Food();
             CreatePlayer();
             CreateMap();
             DisplayScore();
@@ -50,6 +70,7 @@ namespace SnakeV2
 
         static void GameLoop(Object o)
         {
+            if (paused) { return; }
             MovePlayer();
             CheckForGameOver();
         }
@@ -60,37 +81,39 @@ namespace SnakeV2
             {
                 ConsoleKeyInfo key = new ConsoleKeyInfo();
                 key = Console.ReadKey(true);
-
+                //▀ ▐ 
                 if (key.Key == ConsoleKey.W && ySpeed == 0)
                 {
                     xSpeed = 0;
                     ySpeed = -1;
-                    gameLoopTimer.Change(0, 200);
+                    allParts[0].symbol = "▀";
+                    //if (!gameOver) { gameLoopTimer.Change(0, 200); }
                 }
                 else if (key.Key == ConsoleKey.S && ySpeed == 0)
                 {
                     xSpeed = 0;
                     ySpeed = 1;
-                    gameLoopTimer.Change(0, 200);
+                    allParts[0].symbol = "▀";
+                   // if (!gameOver) { gameLoopTimer.Change(0, 200); }
                 }
                 else if (key.Key == ConsoleKey.D && xSpeed == 0)
                 {
                     xSpeed = 1;
                     ySpeed = 0;
-                 
-                    gameLoopTimer.Change(0, 100);
+                    allParts[0].symbol = "▐";
+                    //if (!gameOver) { gameLoopTimer.Change(0, 100); }
                 }
                 else if (key.Key == ConsoleKey.A && xSpeed == 0)
                 {
                     xSpeed = -1;
                     ySpeed = 0;
-                    gameLoopTimer.Change(0, 100);
+                    allParts[0].symbol = "▐";
+                    //if (!gameOver) { gameLoopTimer.Change(0, 100); }
                 }
                 if(key.Key == ConsoleKey.Spacebar)
                 {
-                    score += 1;
+                    paused = !paused;
                     DisplayScore();
-                    addPart = true;
                 }
             }
 
@@ -103,19 +126,40 @@ namespace SnakeV2
             {
                 gameOver = true;
                 gameLoopTimer.Dispose();
+                DisplayScore();
+            }            
+            if(allParts[0].posX == foodInstance.posX && allParts[0].posY == foodInstance.posY)
+            {
+                foodInstance.SetRandomPosition(mapColumns, mapRows);
+                score += 1;
+                addPart = true;
+            }
+            if(allParts.Count > 1)
+            {
+                for (int i = allParts.Count - 1; i > 0; i--)
+                {
+                    if(allParts[0].posX == allParts[i].posX && allParts[0].posY == allParts[i].posY)
+                    {
+                        gameOver = true;
+                        gameLoopTimer.Dispose();
+                        DisplayScore();
+                        break;
+                    }
+                }
             }
         }
 
         static void MovePlayer()
         {
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Red;
+
 
             int tempNewX = 0;
             int tempNewY = 0;
             if (!addPart)
             {
                 Console.SetCursorPosition(allParts[allParts.Count - 1].posX, allParts[allParts.Count - 1].posY);
+                Console.BackgroundColor = ConsoleColor.White;
                 Console.Write(" ");
             }
             else
@@ -132,6 +176,7 @@ namespace SnakeV2
                 {
                     allParts[i].posX = allParts[i - 1].posX;
                     allParts[i].posY = allParts[i - 1].posY;
+                    allParts[i].symbol = allParts[i - 1].symbol;
                 }
                 else
                 {
@@ -144,12 +189,15 @@ namespace SnakeV2
             for (int i = allParts.Count - 1; i > -1; i--)
             {
                 Console.SetCursorPosition(allParts[i].posX, allParts[i].posY);
-                Console.Write("■");
+                //▀ ▐ 
+                Console.BackgroundColor = ConsoleColor.DarkCyan;
+                Console.Write(allParts[i].symbol);
             }
 
             if (addPart)
             {
-                allParts.Add(new SnakePart(tempNewX, tempNewY));
+                allParts.Add(new SnakePart(tempNewX, tempNewY,"o"));
+                DisplayScore();
                 addPart = false;
             }
 
@@ -162,11 +210,26 @@ namespace SnakeV2
             Console.BackgroundColor = ConsoleColor.Black;
             Console.SetCursorPosition(mapColumns + 3, mapRows / 2);
             Console.Write($"Score : {score}");
+            Console.SetCursorPosition(mapColumns + 3, (mapRows / 2) - 1);
+            Console.Write($"      ");
+
+            if (gameOver)
+            {
+                Console.SetCursorPosition(mapColumns + 3, (mapRows / 2) - 1);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write($"Game Over!");
+            }
+            if (paused)
+            {
+                Console.SetCursorPosition(mapColumns + 3, (mapRows / 2) - 1);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write($"Paused");
+            }
         }
 
         static void CreatePlayer()
         {
-            allParts.Add(new SnakePart(7, 12));
+            allParts.Add(new SnakePart(mapColumns/2, mapRows / 2, "▐"));
 
         }
         static void CreateMap()
@@ -183,6 +246,7 @@ namespace SnakeV2
 
                 Console.Write("\n");
             }
+            foodInstance.SetRandomPosition(mapColumns, mapRows);
         }
 
         static string GetMapPiece(int thisRow, int thisCol)
