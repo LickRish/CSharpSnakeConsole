@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
+
 namespace SnakeV2
 {
     class SnakePart
@@ -19,13 +20,14 @@ namespace SnakeV2
     }
     class Program
     {
-
+        static Thread getInputThread;
         static Timer gameLoopTimer = null;
         //player variables
         static List<SnakePart> allParts = new List<SnakePart>();
         static int xSpeed = 1;
         static int ySpeed = 0;
         //score variables
+        static bool gameOver = false;
         static int score = 0;
         static float time = 0;
         static float addTime = 0.1f;
@@ -40,20 +42,60 @@ namespace SnakeV2
             Console.CursorVisible = false;
             CreatePlayer();
             CreateMap();
+
+
+
+            getInputThread = new Thread(new ThreadStart(GetInput));
+            getInputThread.Start();
+
             gameLoopTimer = new Timer(GameLoop, null, 0, 100);
+
             Console.ReadLine();
         }
 
         static void GameLoop(Object o)
         {
-            GetInput();
             MovePlayer();
             DisplayScoreTime();
+            CheckForGameOver();
+        }
+
+        public static void GetInput()
+        {
+            while (gameOver == false)
+            {
+                ConsoleKeyInfo key = new ConsoleKeyInfo();
+                key = Console.ReadKey(true);
+
+                if (key.KeyChar == 'w')
+                {
+                    score = 1;
+                }
+                if (key.KeyChar == 's')
+                {
+                    score = 2;
+                }
+                if (key.KeyChar == 'd')
+                {
+                    score = 3;
+                }
+                if (key.KeyChar == 'a')
+                {
+                    score = 4;
+                }
+            }
+
         }
 
 
-        static void GetInput()
-        {            
+        static void CheckForGameOver()
+        {
+            //checks if snake hit edge of map
+            if (allParts[0].posX == mapColumns - 1 || allParts[0].posX == 0 || allParts[0].posY == mapRows - 1 || allParts[0].posY == 0)
+            {
+                gameOver = true;
+                gameLoopTimer.Dispose();
+            }
         }
 
         static void MovePlayer()
@@ -124,7 +166,6 @@ namespace SnakeV2
             mapArray = new string[mapRows, mapColumns];
             for (int row = 0; row < mapArray.GetLength(0); row++)
             {
-                Console.Write("   ");
                 for (int col = 0; col < mapArray.GetLength(1); col++)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
