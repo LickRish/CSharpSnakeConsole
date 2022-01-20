@@ -96,43 +96,46 @@ namespace SnakeV2
                 if (waitForMove) { continue; }
                 ConsoleKeyInfo key = new ConsoleKeyInfo();
                 key = Console.ReadKey(true);
-                //▀ ▐ 
-                if (key.Key == ConsoleKey.W && ySpeed == 0)
-                {
-                    xSpeed = 0;
-                    ySpeed = -1;
-                    allParts[0].symbol = "▀";
-                    waitForMove = true;
-                    //if (!gameOver) { gameLoopTimer.Change(0, 200); }
-                }
-                else if (key.Key == ConsoleKey.S && ySpeed == 0)
-                {
-                    xSpeed = 0;
-                    ySpeed = 1;
-                    allParts[0].symbol = "▀";
-                    waitForMove = true;
-                    // if (!gameOver) { gameLoopTimer.Change(0, 200); }
-                }
-                else if (key.Key == ConsoleKey.D && xSpeed == 0)
-                {
-                    xSpeed = 1;
-                    ySpeed = 0;
-                    allParts[0].symbol = "▐";
-                    waitForMove = true;
-                    //if (!gameOver) { gameLoopTimer.Change(0, 100); }
-                }
-                else if (key.Key == ConsoleKey.A && xSpeed == 0)
-                {
-                    xSpeed = -1;
-                    ySpeed = 0;
-                    allParts[0].symbol = "▐";
-                    waitForMove = true;
-                    //if (!gameOver) { gameLoopTimer.Change(0, 100); }
-                }
-                if(key.Key == ConsoleKey.Spacebar)
+
+                if (key.Key == ConsoleKey.Spacebar)
                 {
                     paused = !paused;
                     DisplayScore();
+                }
+                if (!paused)
+                {
+                    if (key.Key == ConsoleKey.W && ySpeed == 0)
+                    {
+                        xSpeed = 0;
+                        ySpeed = -1;
+                        allParts[0].symbol = "▀";
+                        waitForMove = true;
+                        //if (!gameOver) { gameLoopTimer.Change(0, 200); }
+                    }
+                    else if (key.Key == ConsoleKey.S && ySpeed == 0)
+                    {
+                        xSpeed = 0;
+                        ySpeed = 1;
+                        allParts[0].symbol = "▀";
+                        waitForMove = true;
+                        // if (!gameOver) { gameLoopTimer.Change(0, 200); }
+                    }
+                    else if (key.Key == ConsoleKey.D && xSpeed == 0)
+                    {
+                        xSpeed = 1;
+                        ySpeed = 0;
+                        allParts[0].symbol = "▐";
+                        waitForMove = true;
+                        //if (!gameOver) { gameLoopTimer.Change(0, 100); }
+                    }
+                    else if (key.Key == ConsoleKey.A && xSpeed == 0)
+                    {
+                        xSpeed = -1;
+                        ySpeed = 0;
+                        allParts[0].symbol = "▐";
+                        waitForMove = true;
+                        //if (!gameOver) { gameLoopTimer.Change(0, 100); }
+                    }
                 }
             }
 
@@ -270,6 +273,11 @@ namespace SnakeV2
 
                 Console.Write("\n");
             }
+            Console.SetCursorPosition(mapColumns + 10, mapRows + 20);
+            Console.Write("You found my secret!");
+            Console.SetCursorPosition(mapColumns + 10, mapRows + 60);
+            Console.Write("Stop going down..");
+            Console.SetCursorPosition(0, 0);
             foodInstance.SetRandomPosition(mapColumns, mapRows);
         }
 
