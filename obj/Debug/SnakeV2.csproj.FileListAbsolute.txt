@@ -1,6 +1,5 @@
 C:\Users\Mark\source\repos\SnakeV2\CSharpSnakeConsole\bin\Debug\SnakeV2.exe
 C:\Users\Mark\source\repos\SnakeV2\CSharpSnakeConsole\bin\Debug\SnakeV2.pdb
-C:\Users\Mark\source\repos\SnakeV2\CSharpSnakeConsole\obj\Debug\SnakeV2.csprojAssemblyReference.cache
 C:\Users\Mark\source\repos\SnakeV2\CSharpSnakeConsole\obj\Debug\SnakeV2.csproj.CoreCompileInputs.cache
 C:\Users\Mark\source\repos\SnakeV2\CSharpSnakeConsole\obj\Debug\SnakeV2.exe
 C:\Users\Mark\source\repos\SnakeV2\CSharpSnakeConsole\obj\Debug\SnakeV2.pdb
