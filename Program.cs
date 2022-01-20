@@ -55,6 +55,8 @@ namespace SnakeV2
         static int xSpeed = 1;
         static int ySpeed = 0;
         static bool addPart = false;
+        static bool waitForMove = false;
+        static int gameSpeed = 100;
         //score variables
         static bool gameOver = false;
         static int score = 0;
@@ -79,6 +81,7 @@ namespace SnakeV2
             Console.ReadLine();
         }
 
+
         static void GameLoop(Object o)
         {
             if (paused) { return; }
@@ -90,6 +93,7 @@ namespace SnakeV2
         {
             while (gameOver == false)
             {
+                if (waitForMove) { continue; }
                 ConsoleKeyInfo key = new ConsoleKeyInfo();
                 key = Console.ReadKey(true);
                 //▀ ▐ 
@@ -98,6 +102,7 @@ namespace SnakeV2
                     xSpeed = 0;
                     ySpeed = -1;
                     allParts[0].symbol = "▀";
+                    waitForMove = true;
                     //if (!gameOver) { gameLoopTimer.Change(0, 200); }
                 }
                 else if (key.Key == ConsoleKey.S && ySpeed == 0)
@@ -105,13 +110,15 @@ namespace SnakeV2
                     xSpeed = 0;
                     ySpeed = 1;
                     allParts[0].symbol = "▀";
-                   // if (!gameOver) { gameLoopTimer.Change(0, 200); }
+                    waitForMove = true;
+                    // if (!gameOver) { gameLoopTimer.Change(0, 200); }
                 }
                 else if (key.Key == ConsoleKey.D && xSpeed == 0)
                 {
                     xSpeed = 1;
                     ySpeed = 0;
                     allParts[0].symbol = "▐";
+                    waitForMove = true;
                     //if (!gameOver) { gameLoopTimer.Change(0, 100); }
                 }
                 else if (key.Key == ConsoleKey.A && xSpeed == 0)
@@ -119,6 +126,7 @@ namespace SnakeV2
                     xSpeed = -1;
                     ySpeed = 0;
                     allParts[0].symbol = "▐";
+                    waitForMove = true;
                     //if (!gameOver) { gameLoopTimer.Change(0, 100); }
                 }
                 if(key.Key == ConsoleKey.Spacebar)
@@ -141,6 +149,7 @@ namespace SnakeV2
             }            
             if(allParts[0].posX == foodInstance.posX && allParts[0].posY == foodInstance.posY)
             {
+                Console.Beep(100, 200);
                 foodInstance.SetRandomPosition(mapColumns, mapRows);
                 score += 1;
                 addPart = true;
@@ -158,6 +167,9 @@ namespace SnakeV2
                     }
                 }
             }
+
+            waitForMove = false;
+
         }
 
         static void MovePlayer()
@@ -211,6 +223,7 @@ namespace SnakeV2
                 DisplayScore();
                 addPart = false;
             }
+
 
         }
 
