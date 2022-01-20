@@ -28,11 +28,22 @@ namespace SnakeV2
         Random randX = new Random();
         public void SetRandomPosition(int maxCols, int maxRows)
         {
+
             posX = randX.Next(1, maxCols-1);
             posY = randX.Next(1, maxRows-1);
+
+            for (int i = Program.allParts.Count - 1; i > -1; i--)
+            {
+                if(posX == Program.allParts[i].posX && posY == Program.allParts[i].posY)
+                {
+                    SetRandomPosition(maxCols, maxRows);
+                }
+            }
+
             Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = (ConsoleColor)randX.Next(1, 14);
             Console.SetCursorPosition(posX, posY);
-            Console.Write("0");
+            Console.Write("■");
         }
     }
     class Program
@@ -40,7 +51,7 @@ namespace SnakeV2
         static Timer gameLoopTimer = null;
         static bool paused = false;
         //player variables
-        static List<SnakePart> allParts = new List<SnakePart>();
+        public static List<SnakePart> allParts = new List<SnakePart>();
         static int xSpeed = 1;
         static int ySpeed = 0;
         static bool addPart = false;
@@ -239,7 +250,7 @@ namespace SnakeV2
             {
                 for (int col = 0; col < mapArray.GetLength(1); col++)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.Gray;
                     mapArray[row, col] = GetMapPiece(row,col);
                     Console.Write(mapArray[row, col]);
                 }
