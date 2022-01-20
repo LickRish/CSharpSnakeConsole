@@ -20,17 +20,15 @@ namespace SnakeV2
     }
     class Program
     {
-        static Thread getInputThread;
         static Timer gameLoopTimer = null;
         //player variables
         static List<SnakePart> allParts = new List<SnakePart>();
         static int xSpeed = 1;
         static int ySpeed = 0;
+        static bool addPart = false;
         //score variables
         static bool gameOver = false;
         static int score = 0;
-        static float time = 0;
-        static float addTime = 0.1f;
         //map variables
         static string[,] mapArray;
         static int mapColumns = 50;
@@ -38,17 +36,14 @@ namespace SnakeV2
 
         static void Main(string[] args)
         {
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            //Console.OutputEncoding = System.Text.Encoding.UTF8;
             Console.CursorVisible = false;
             CreatePlayer();
             CreateMap();
-
-
-
-            getInputThread = new Thread(new ThreadStart(GetInput));
-            getInputThread.Start();
-
+            DisplayScore();
             gameLoopTimer = new Timer(GameLoop, null, 0, 100);
+            GetInput();
+
 
             Console.ReadLine();
         }
@@ -56,7 +51,6 @@ namespace SnakeV2
         static void GameLoop(Object o)
         {
             MovePlayer();
-            DisplayScoreTime();
             CheckForGameOver();
         }
 
@@ -67,26 +61,40 @@ namespace SnakeV2
                 ConsoleKeyInfo key = new ConsoleKeyInfo();
                 key = Console.ReadKey(true);
 
-                if (key.KeyChar == 'w')
+                if (key.Key == ConsoleKey.W && ySpeed == 0)
                 {
-                    score = 1;
+                    xSpeed = 0;
+                    ySpeed = -1;
+                    gameLoopTimer.Change(0, 200);
                 }
-                if (key.KeyChar == 's')
+                else if (key.Key == ConsoleKey.S && ySpeed == 0)
                 {
-                    score = 2;
+                    xSpeed = 0;
+                    ySpeed = 1;
+                    gameLoopTimer.Change(0, 200);
                 }
-                if (key.KeyChar == 'd')
+                else if (key.Key == ConsoleKey.D && xSpeed == 0)
                 {
-                    score = 3;
+                    xSpeed = 1;
+                    ySpeed = 0;
+                 
+                    gameLoopTimer.Change(0, 100);
                 }
-                if (key.KeyChar == 'a')
+                else if (key.Key == ConsoleKey.A && xSpeed == 0)
                 {
-                    score = 4;
+                    xSpeed = -1;
+                    ySpeed = 0;
+                    gameLoopTimer.Change(0, 100);
+                }
+                if(key.Key == ConsoleKey.Spacebar)
+                {
+                    score += 1;
+                    DisplayScore();
+                    addPart = true;
                 }
             }
 
         }
-
 
         static void CheckForGameOver()
         {
@@ -102,8 +110,20 @@ namespace SnakeV2
         {
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.BackgroundColor = ConsoleColor.White;
-            Console.SetCursorPosition(allParts[allParts.Count - 1].posX, allParts[allParts.Count - 1].posY);
-            Console.Write(" ");
+
+            int tempNewX = 0;
+            int tempNewY = 0;
+            if (!addPart)
+            {
+                Console.SetCursorPosition(allParts[allParts.Count - 1].posX, allParts[allParts.Count - 1].posY);
+                Console.Write(" ");
+            }
+            else
+            {
+                tempNewX = allParts[allParts.Count - 1].posX;
+                tempNewY = allParts[allParts.Count - 1].posY;
+            }
+
 
             //move snake
             for (int i = allParts.Count - 1; i > -1; i--)
@@ -120,40 +140,28 @@ namespace SnakeV2
                 }
             }
 
-
             //draw snake
             for (int i = allParts.Count - 1; i > -1; i--)
             {
                 Console.SetCursorPosition(allParts[i].posX, allParts[i].posY);
                 Console.Write("■");
             }
-            ////swap last and first
-            //SnakePart tmp = allParts[0];
-            //allParts[0] = allParts[allParts.Count - 1];
-            //allParts[allParts.Count - 1] = tmp;
 
+            if (addPart)
+            {
+                allParts.Add(new SnakePart(tempNewX, tempNewY));
+                addPart = false;
+            }
 
-            //Console.ForegroundColor = ConsoleColor.Blue;
-            //Console.BackgroundColor = ConsoleColor.White;
-            ////grab part at end of list and set its pos to next pos
-            //Console.SetCursorPosition(allParts[allParts.Count - 1].posX, allParts[allParts.Count - 1].posY);
-            //Console.Write(" ");
-            //allParts[allParts.Count - 1].posX = allParts[0].posX + xSpeed;
-            //allParts[allParts.Count - 1].posY = allParts[0].posY + ySpeed;
-            
-            //Console.SetCursorPosition(allParts[allParts.Count - 1].posX, allParts[allParts.Count - 1].posY);
-            //Console.Write("O");
         }
-        static void DisplayScoreTime()
+
+        //call this at start, and only when collecting food
+        static void DisplayScore()
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.BackgroundColor = ConsoleColor.Black;
             Console.SetCursorPosition(mapColumns + 3, mapRows / 2);
             Console.Write($"Score : {score}");
-            Console.SetCursorPosition(mapColumns + 3, (mapRows / 2) - 1);
-            time += addTime;
-            string timeString = time.ToString("0.0");
-            Console.Write($"Time : {timeString}");
         }
 
         static void CreatePlayer()
