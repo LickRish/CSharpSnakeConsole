@@ -12,12 +12,14 @@ namespace SnakeV2
         public int posX;
         public int posY;
         public string symbol;
+        public ConsoleColor color;
 
-        public SnakePart(int x, int y, string tsymbol)
+        public SnakePart(int x, int y, string tsymbol,ConsoleColor thisColor)
         {
             posX = x;
             posY = y;
             symbol = tsymbol;
+            color = thisColor;
         }
     }
 
@@ -26,6 +28,7 @@ namespace SnakeV2
         public int posX;
         public int posY;
         Random randX = new Random();
+        public ConsoleColor color;
         public void SetRandomPosition(int maxCols, int maxRows)
         {
 
@@ -40,8 +43,9 @@ namespace SnakeV2
                 }
             }
 
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = (ConsoleColor)randX.Next(1, 14);
+            Console.BackgroundColor = ConsoleColor.Black;
+            color = (ConsoleColor)randX.Next(0, 16);
+            Console.ForegroundColor = color;
             Console.SetCursorPosition(posX, posY);
             Console.Write("■");
         }
@@ -56,6 +60,7 @@ namespace SnakeV2
         static int ySpeed = 0;
         static bool addPart = false;
         static bool waitForMove = false;
+        static ConsoleColor addThisColor;
         //score variables
         static bool gameOver = false;
         static int score = 0;
@@ -163,6 +168,7 @@ namespace SnakeV2
             }            
             if(allParts[0].posX == foodInstance.posX && allParts[0].posY == foodInstance.posY)
             {
+                addThisColor = foodInstance.color;
                 //Console.Beep(100, 200);
                 foodInstance.SetRandomPosition(mapColumns, mapRows);
                 score += 5;
@@ -189,7 +195,7 @@ namespace SnakeV2
 
         static void MovePlayer()
         {
-            Console.ForegroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = ConsoleColor.Black;
 
 
             int tempNewX = 0;
@@ -235,13 +241,13 @@ namespace SnakeV2
             {
                 Console.SetCursorPosition(allParts[i].posX, allParts[i].posY);
                 //▀ ▐ 
-                Console.BackgroundColor = ConsoleColor.DarkCyan;
+                Console.BackgroundColor = allParts[i].color;
                 Console.Write(allParts[i].symbol);
             }
 
             if (addPart)
             {
-                allParts.Add(new SnakePart(tempNewX, tempNewY,"o"));
+                allParts.Add(new SnakePart(tempNewX, tempNewY,"o",addThisColor));
                 DisplayScore();
                 addPart = false;
             }
@@ -277,7 +283,7 @@ namespace SnakeV2
 
         static void CreatePlayer()
         {
-            allParts.Add(new SnakePart(mapColumns/2, mapRows / 2, "▐"));
+            allParts.Add(new SnakePart(mapColumns/2, mapRows / 2, "▐",ConsoleColor.Red));
 
         }
         static void CreateMap()
