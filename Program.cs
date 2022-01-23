@@ -68,7 +68,7 @@ namespace SnakeV2
         static Food foodInstance;
         //map variables
         static string[,] mapArray;
-        static int mapColumns = 50;
+        static int mapColumns = 100;
         static int mapRows = 25;
 
         static void Main(string[] args)
@@ -80,7 +80,7 @@ namespace SnakeV2
             CreatePlayer();
             CreateMap();
             DisplayScore();
-            gameLoopTimer = new Timer(GameLoop, null, 0, 100);
+            gameLoopTimer = new Timer(GameLoop, null, 0, 75);
             GetInput();
 
 
@@ -118,6 +118,15 @@ namespace SnakeV2
                     paused = !paused;
                     DisplayScore();
                 }
+                //very buggy
+                //if(key.Key == ConsoleKey.E)
+                //{
+                //    gameLoopTimer.Change(0, 50);
+                //}
+                //if (key.Key == ConsoleKey.Q)
+                //{
+                //    gameLoopTimer.Change(0, 100);
+                //}
                 if (!paused)
                 {
                     if (key.Key == ConsoleKey.W && ySpeed == 0)
@@ -190,6 +199,7 @@ namespace SnakeV2
             }
 
             waitForMove = false;
+
 
         }
 
