@@ -185,7 +185,14 @@ namespace SnakeV2
             if (!addPart)
             {
                 Console.SetCursorPosition(allParts[allParts.Count - 1].posX, allParts[allParts.Count - 1].posY);
-                Console.BackgroundColor = ConsoleColor.White;
+                if (allParts[allParts.Count- 1].posX % 2 == 0)
+                {
+                    Console.BackgroundColor = ConsoleColor.White;
+                }
+                else
+                {
+                    Console.BackgroundColor = ConsoleColor.Gray;
+                }
                 Console.Write(" ");
             }
             else
@@ -266,7 +273,7 @@ namespace SnakeV2
             {
                 for (int col = 0; col < mapArray.GetLength(1); col++)
                 {
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = ConsoleColor.Black;
                     mapArray[row, col] = GetMapPiece(row,col);
                     Console.Write(mapArray[row, col]);
                 }
@@ -283,7 +290,7 @@ namespace SnakeV2
 
         static string GetMapPiece(int thisRow, int thisCol)
         {
-            Console.BackgroundColor = ConsoleColor.Black;
+            Console.BackgroundColor = ConsoleColor.DarkGray;
             if (thisRow == 0 && thisCol == 0)
             {
                 return "╔";
@@ -318,7 +325,14 @@ namespace SnakeV2
             }
             else
             {
-                Console.BackgroundColor = ConsoleColor.White;
+                if(thisCol % 2 == 0)
+                {
+                    Console.BackgroundColor = ConsoleColor.White;
+                }
+                else
+                {
+                    Console.BackgroundColor = ConsoleColor.Gray;
+                }
                 return " ";
             }
         }
