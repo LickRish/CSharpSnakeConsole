@@ -56,10 +56,10 @@ namespace SnakeV2
         static int ySpeed = 0;
         static bool addPart = false;
         static bool waitForMove = false;
-        static int gameSpeed = 100;
         //score variables
         static bool gameOver = false;
         static int score = 0;
+        static int length = 0;
         static Food foodInstance;
         //map variables
         static string[,] mapArray;
@@ -68,6 +68,7 @@ namespace SnakeV2
 
         static void Main(string[] args)
         {
+            //SetUpGame();
             //Console.OutputEncoding = System.Text.Encoding.UTF8;
             Console.CursorVisible = false;
             foodInstance = new Food();
@@ -81,6 +82,16 @@ namespace SnakeV2
             Console.ReadLine();
         }
 
+
+        static void SetUpGame()
+        {
+            Console.WriteLine("Enter Amount of Coloumns ");
+            Console.ReadLine();
+            Console.WriteLine("Enter Amount of Rows ");
+            Console.ReadLine();
+            Console.Clear();
+
+        }
 
         static void GameLoop(Object o)
         {
@@ -152,9 +163,10 @@ namespace SnakeV2
             }            
             if(allParts[0].posX == foodInstance.posX && allParts[0].posY == foodInstance.posY)
             {
-                Console.Beep(100, 200);
+                //Console.Beep(100, 200);
                 foodInstance.SetRandomPosition(mapColumns, mapRows);
-                score += 1;
+                score += 5;
+                length++;
                 addPart = true;
             }
             if(allParts.Count > 1)
@@ -244,6 +256,8 @@ namespace SnakeV2
             Console.BackgroundColor = ConsoleColor.Black;
             Console.SetCursorPosition(mapColumns + 3, mapRows / 2);
             Console.Write($"Score : {score}");
+            Console.SetCursorPosition(mapColumns + 3, (mapRows / 2) + 1);
+            Console.Write($"Length : {length}");
             Console.SetCursorPosition(mapColumns + 3, (mapRows / 2) - 1);
             Console.Write($"      ");
 
