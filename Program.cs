@@ -54,6 +54,7 @@ namespace SnakeV2
     {
         static Timer gameLoopTimer = null;
         static bool paused = false;
+        static bool changedDirection = false;
         //player variables
         public static List<SnakePart> allParts = new List<SnakePart>();
         static int xSpeed = 1;
@@ -101,8 +102,29 @@ namespace SnakeV2
         static void GameLoop(Object o)
         {
             if (paused) { return; }
+            if (CheckToChangeGameSpeed()) { return; }
             MovePlayer();
             CheckForGameOver();
+        }
+
+        public static bool CheckToChangeGameSpeed()
+        {
+            if(changedDirection == true)
+            {
+                if(xSpeed != 0)
+                {
+                    changedDirection = false;
+                    gameLoopTimer.Change(0, 75);
+                    return true;
+                }
+                if(ySpeed != 0)
+                {
+                    changedDirection = false;
+                    gameLoopTimer.Change(0, 100);
+                    return true;
+                }
+            }
+            return false;
         }
 
         public static void GetInput()
@@ -118,15 +140,6 @@ namespace SnakeV2
                     paused = !paused;
                     DisplayScore();
                 }
-                //very buggy
-                //if(key.Key == ConsoleKey.E)
-                //{
-                //    gameLoopTimer.Change(0, 50);
-                //}
-                //if (key.Key == ConsoleKey.Q)
-                //{
-                //    gameLoopTimer.Change(0, 100);
-                //}
                 if (!paused)
                 {
                     if (key.Key == ConsoleKey.W && ySpeed == 0)
@@ -134,6 +147,7 @@ namespace SnakeV2
                         xSpeed = 0;
                         ySpeed = -1;
                         allParts[0].symbol = "▀";
+                        changedDirection = true;
                         waitForMove = true;
                         //if (!gameOver) { gameLoopTimer.Change(0, 200); }
                     }
@@ -142,6 +156,7 @@ namespace SnakeV2
                         xSpeed = 0;
                         ySpeed = 1;
                         allParts[0].symbol = "▀";
+                        changedDirection = true;
                         waitForMove = true;
                         // if (!gameOver) { gameLoopTimer.Change(0, 200); }
                     }
@@ -150,6 +165,7 @@ namespace SnakeV2
                         xSpeed = 1;
                         ySpeed = 0;
                         allParts[0].symbol = "▐";
+                        changedDirection = true;
                         waitForMove = true;
                         //if (!gameOver) { gameLoopTimer.Change(0, 100); }
                     }
@@ -158,6 +174,7 @@ namespace SnakeV2
                         xSpeed = -1;
                         ySpeed = 0;
                         allParts[0].symbol = "▐";
+                        changedDirection = true;
                         waitForMove = true;
                         //if (!gameOver) { gameLoopTimer.Change(0, 100); }
                     }
