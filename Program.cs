@@ -149,7 +149,6 @@ namespace SnakeV2
                         allParts[0].symbol = "▀";
                         changedDirection = true;
                         waitForMove = true;
-                        //if (!gameOver) { gameLoopTimer.Change(0, 200); }
                     }
                     else if (key.Key == ConsoleKey.S && ySpeed == 0)
                     {
@@ -158,7 +157,6 @@ namespace SnakeV2
                         allParts[0].symbol = "▀";
                         changedDirection = true;
                         waitForMove = true;
-                        // if (!gameOver) { gameLoopTimer.Change(0, 200); }
                     }
                     else if (key.Key == ConsoleKey.D && xSpeed == 0)
                     {
@@ -167,7 +165,6 @@ namespace SnakeV2
                         allParts[0].symbol = "▐";
                         changedDirection = true;
                         waitForMove = true;
-                        //if (!gameOver) { gameLoopTimer.Change(0, 100); }
                     }
                     else if (key.Key == ConsoleKey.A && xSpeed == 0)
                     {
@@ -176,7 +173,6 @@ namespace SnakeV2
                         allParts[0].symbol = "▐";
                         changedDirection = true;
                         waitForMove = true;
-                        //if (!gameOver) { gameLoopTimer.Change(0, 100); }
                     }
                 }
             }
@@ -320,7 +316,7 @@ namespace SnakeV2
             {
                 for (int col = 0; col < mapArray.GetLength(1); col++)
                 {
-                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.White;
                     mapArray[row, col] = GetMapPiece(row,col);
                     Console.Write(mapArray[row, col]);
                 }
@@ -337,7 +333,7 @@ namespace SnakeV2
 
         static string GetMapPiece(int thisRow, int thisCol)
         {
-            Console.BackgroundColor = ConsoleColor.DarkGray;
+            Console.BackgroundColor = ConsoleColor.Black;
             if (thisRow == 0 && thisCol == 0)
             {
                 return "╔";
